@@ -1,7 +1,7 @@
 package = "cardwallet_tbot"
 version = "dev-1"
 source = {
-   url = "git+https://github.com/MrSyabro/cardwallet_tbot.git",
+   url = "git+ssh://git@github.com/MrSyabro/cardwallet_tbot.git",
    branch = "devel",
 }
 description = {
@@ -9,14 +9,19 @@ description = {
    license = "MIT/X11"
 }
 dependencies = {
-   "lua >= 5.1",
-   "telegram-bot-lua"
+   "lua >= 5.2",
+   "telegram-bot-lua",
+   "luafilesystem",
 }
 build = {
    type = "builtin",
+   modules = {
+      --serialize = "lib/serialize.lua",
+      --database = "lib/database.lua",
+   },
    install = {
       bin = { cardbot = "src/init.lua" },
-      conf = { confi = "config.lua" },
+      conf = { "config.lua" },
       lua = {
          serialize = "lib/serialize.lua",
          database = "lib/database.lua"
