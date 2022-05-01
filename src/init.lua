@@ -94,8 +94,9 @@ function api.on_inline_query(inline_query)
         :id(id)
         :title(key)
         :input_message_content(
-            api.input_text_message_content(cardnumber)
-        )
+            api.input_text_message_content(
+              "`"..cardnumber.."`", "Markdown")
+        ), 0, true, id
       )
       id = id + 1
     end
