@@ -12,6 +12,7 @@ dependencies = {
    "lua >= 5.2",
    "telegram-bot-lua",
    "luafilesystem",
+   "datafile",
 }
 build = {
    type = "builtin",
@@ -21,8 +22,9 @@ build = {
    },
    install = {
       bin = { cardbot = "src/init.lua" },
-      conf = { "config.lua" },
+      --conf = { "config.lua" },
       lua = {
+         config = "config.lua",
          serialize = "lib/serialize.lua",
          database = "lib/database.lua"
       },
