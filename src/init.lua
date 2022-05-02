@@ -31,6 +31,11 @@ function api.on_message(message)
         return
       end
       
+      if #user.cards >= 50 then
+        api.send_message(message.chat.id,
+          "А не слишком ли много ты хочешь?")
+      end
+      
       user.cards[name] = data
       users[user.id] = user
       api.send_message(message.chat.id,
@@ -46,10 +51,10 @@ function api.on_message(message)
           "Нет такой буквы в алфавите.")
       end
     elseif message.text:match("/del") then
-      local name = message.text:match("/get%s*(%w+)")
+      local name = message.text:match("/del%s*(%w+)")
       local cardnumber = user.cards[name]
       if cardnumber then
-        user.cars[name] = nil
+        user.cards[name] = nil
         api.send_message(message.chat.id,
           "Снизвел до атомов")
       else
@@ -83,24 +88,24 @@ function api.on_inline_query(inline_query)
   local user = users[inline_query.from.id]
   print(s.ser(inline_query, true))
   local id = 1
+  local queryes = {}
   for key, cardnumber in pairs(user.cards) do
     if inline_query.query == "" 
     or key:match(inline_query.query)
     then
-      api.answer_inline_query(
-        inline_query.id,
-        api.inline_result()
+      table.insert(queryes, api.inline_result()
         :type('article')
         :id(id)
         :title(key)
         :input_message_content(
             api.input_text_message_content(
               "`"..cardnumber.."`", "Markdown")
-        ), 0, true, id
+        )
       )
       id = id + 1
     end
   end
+  api.answer_inline_query(inline_query.id, queryes, 0, true)
 end
 
 api.run()
