@@ -69,10 +69,10 @@ function api.on_message(message)
     elseif message.text:match("/list") then
       local out = {"Это все твое:", n=1}
       for name, card in pairs (user.cards) do
-        table.insert(out, name.." "..card)
+        table.insert(out, ("*%s:* ```%s```"):format(name,card))
       end
       api.send_message(message.chat.id,
-        table.concat(out, "\n"))
+        table.concat(out, "\n"), "Markdown")
     elseif message.text:match("/help") then
       api.send_message(message.chat.id,
         [[Я могу сохранить строку до 64 символов и предлогать тебе их в чатах.
@@ -105,7 +105,7 @@ function api.on_inline_query(inline_query)
           :title(key)
           :input_message_content(
               api.input_text_message_content(
-                "`"..cardnumber.."`", "Markdown")
+                cardnumber)
           )
         )
         id = id + 1
