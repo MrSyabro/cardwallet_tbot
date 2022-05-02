@@ -27,7 +27,7 @@ function api.on_message(message)
       local data, name = message.text:match("/add%s*(%g+)%s*(%w+)")
       if not data
       or not name
-      or #data > 64
+      or #data > 280
       or #name > 32
       then
         api.send_message(message.chat.id,
@@ -60,6 +60,7 @@ function api.on_message(message)
       local cardnumber = user.cards[name]
       if cardnumber then
         user.cards[name] = nil
+        users[user.id] = user
         api.send_message(message.chat.id,
           "Снизвел до атомов")
       else
@@ -67,7 +68,7 @@ function api.on_message(message)
           "Нет такой буквы в алфавите.")
       end
     elseif message.text:match("/list") then
-      local out = {"Это все твое:", n=1}
+      local out = {"Тебе лень запомнить "..#user.cards.." записей. Вспоминай:", n=1}
       for name, card in pairs (user.cards) do
         table.insert(out, ("*%s:* ```%s```"):format(name,card))
       end
@@ -75,7 +76,7 @@ function api.on_message(message)
         table.concat(out, "\n"), "Markdown")
     elseif message.text:match("/help") then
       api.send_message(message.chat.id,
-        [[Я могу сохранить строку до 64 символов и предлогать тебе их в чатах.
+        [[Я могу сохранить строку до 280 символов и предлогать тебе их в чатах.
 `/add <data> <name>` - запомнить текст по имени
 `/get <name>` - получить текст по имени
 `/del <name>` - удалить текст по имени
@@ -83,7 +84,7 @@ function api.on_message(message)
 Имена могут содержать только латынские буквы и цифры. Текст может содерать латынские буквы, символы и цифры.]], "Markdown")
     elseif message.text:match("/start") then
       api.send_message(message.chat.id,
-        [[Привет. Я бот помощник. Умею хранить любой текст до 64 символов и помогать тебе отправить их в нужный момент.
+        [[Привет. Я бот помощник. Умею хранить любой текст до 280 символов и помогать тебе отправить их в нужный момент.
 Напиши `/add <data> <name>` (name только латынские символы) что бы добавить первый текст.
 Нажми /help что бы узнать остальные команды.]], "Markdown")
     end
