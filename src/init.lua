@@ -1,7 +1,9 @@
 #!/usr/bin/env lua
 local s = require ("serialize")
 local fs = require ("lfs")
-local conf_path = (os.getenv("PREFIX") or "").."/etc/cardwallet_tbot.lua"
+local conf_path = 
+  os.getenv("APPDATA") and (os.getenv("APDATA").."/cardwallet_tbot/config.lua")
+  or (os.getenv("PREFIX") or "").."/etc/cardwallet_tbot.lua"
 if not fs.attributes(conf_path) then return end
 local config = loadfile(conf_path)()
 if not fs.attributes(config.data_path) then
@@ -22,7 +24,7 @@ function api.on_message(message)
   
   if message.text then
     if message.text:match("/add") then
-      local data, name = message.text:match("/add%s*(%w+)%s*(%w+)")
+      local data, name = message.text:match("/add%s*(%g+)%s*(%w+)")
       if not data
       or not name
       or #data > 64
@@ -41,7 +43,8 @@ function api.on_message(message)
       user.cards[name] = data
       users[user.id] = user
       api.send_message(message.chat.id,
-        "Окей. Я сохранил твою белеберду '"..data.."'")
+        "Окей. Я сохранил твою белеберду `"..data..
+        "`. Можешь отправить ее в любом чате.", "Markdown")
     elseif message.text:match("/get") then
       local name = message.text:match("/get%s*(%w+)")
       local cardnumber = user.cards[name]
@@ -72,15 +75,16 @@ function api.on_message(message)
         table.concat(out, "\n"))
     elseif message.text:match("/help") then
       api.send_message(message.chat.id,
-        [[Я могу сохранить строку до 16 символов из чисел.
-`/add <data> <name>` - запомнить текст по имени (только латынские символы)
+        [[Я могу сохранить строку до 64 символов и предлогать тебе их в чатах.
+`/add <data> <name>` - запомнить текст по имени
 `/get <name>` - получить текст по имени
 `/del <name>` - удалить текст по имени
-/list - вывести список текстов с именами]], "Markdown")
+/list - вывести список текстов с именами
+Имена могут содержать только латынские буквы и цифры. Текст может содерать латынские буквы, символы и цифры.]], "Markdown")
     elseif message.text:match("/start") then
       api.send_message(message.chat.id,
-        [[Привет. Я бот помощник. Умею хранить банковские карты (или любой текст до 64 символов) и помогать тебе отправить их в нужный момент.
-Напиши `/add <data> <name>` (name только латынские символы) что бы добавить первую карту.
+        [[Привет. Я бот помощник. Умею хранить любой текст до 64 символов и помогать тебе отправить их в нужный момент.
+Напиши `/add <data> <name>` (name только латынские символы) что бы добавить первый текст.
 Нажми /help что бы узнать остальные команды.]], "Markdown")
     end
   end
