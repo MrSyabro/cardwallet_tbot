@@ -1,7 +1,7 @@
 #!/usr/bin/env lua
 local s = require ("serialize")
 local fs = require ("lfs")
-if not fs.attributes("/etc/carwallet_tbot.lua") then return end
+if not fs.attributes("/etc/cardwallet_tbot.lua") then return end
 local config = loadfile("/etc/cardwallet_tbot.lua")()
 if not fs.attributes(config.data_path) then
   fs.mkdir(config.data_path)
