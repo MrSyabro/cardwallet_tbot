@@ -1,8 +1,9 @@
 #!/usr/bin/env lua
 local s = require ("serialize")
 local fs = require ("lfs")
-if not fs.attributes("/etc/cardwallet_tbot.lua") then return end
-local config = loadfile("/etc/cardwallet_tbot.lua")()
+local conf_path = (os.getenv("PREFIX") or "").."/etc/cardwallet_tbot.lua"
+if not fs.attributes(conf_path) then return end
+local config = loadfile(conf_path)()
 if not fs.attributes(config.data_path) then
   fs.mkdir(config.data_path)
   fs.mkdir(config.users_db)
@@ -110,7 +111,7 @@ function api.on_inline_query(inline_query)
   else
     api.answer_inline_query(
         inline_query.id,
-        {}, 0, true, nil, "Start", "/start"
+        {}, 0, true, nil, "Start"
     )
   end
 end

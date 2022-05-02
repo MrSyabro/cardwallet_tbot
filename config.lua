@@ -1,5 +1,5 @@
 local config = {}
-local prefix = os.getenv("PREFIX") or os.getenv("APPDATA")
+local prefix = os.getenv("PREFIX") or os.getenv("APPDATA") or "/usr/local"
 
 config.token = ""
 config.data_path = prefix.."/share/cardwallet_tbot"
