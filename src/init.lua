@@ -111,7 +111,7 @@ function api.on_inline_query(inline_query)
   else
     api.answer_inline_query(
         inline_query.id,
-        {}, 0, true, nil, "Start"
+        {}, 0, true, nil, "Start", "test"
     )
   end
 end
