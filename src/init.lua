@@ -1,7 +1,8 @@
 #!/usr/bin/env lua
-local config = require "config"
 local s = require ("serialize")
 local fs = require ("lfs")
+if not fs.attributes("/etc/carwallet_tbot.lua") then return end
+local config = loadfile("/etc/cardwallet_tbot.lua")()
 if not fs.attributes(config.data_path) then
   fs.mkdir(config.data_path)
   fs.mkdir(config.users_db)
@@ -86,26 +87,32 @@ end
 
 function api.on_inline_query(inline_query)
   local user = users[inline_query.from.id]
-  print(s.ser(inline_query, true))
+  if user then
   local id = 1
   local queryes = {}
-  for key, cardnumber in pairs(user.cards) do
-    if inline_query.query == "" 
-    or key:match(inline_query.query)
-    then
-      table.insert(queryes, api.inline_result()
-        :type('article')
-        :id(id)
-        :title(key)
-        :input_message_content(
-            api.input_text_message_content(
-              "`"..cardnumber.."`", "Markdown")
+    for key, cardnumber in pairs(user.cards) do
+      if inline_query.query == "" 
+      or key:match(inline_query.query)
+      then
+        table.insert(queryes, api.inline_result()
+          :type('article')
+          :id(id)
+          :title(key)
+          :input_message_content(
+              api.input_text_message_content(
+                "`"..cardnumber.."`", "Markdown")
+          )
         )
-      )
-      id = id + 1
+        id = id + 1
+      end
     end
+    api.answer_inline_query(inline_query.id, queryes, 0, true)
+  else
+    api.answer_inline_query(
+        inline_query.id,
+        {}, 0, true, nil, "Start", "/start"
+    )
   end
-  api.answer_inline_query(inline_query.id, queryes, 0, true)
 end
 
 api.run()

@@ -1,7 +1,7 @@
 package = "cardwallet_tbot"
 version = "dev-1"
 source = {
-   url = "git+ssh://git@github.com/MrSyabro/cardwallet_tbot.git",
+   url = "git+https://git@github.com/MrSyabro/cardwallet_tbot.git",
    branch = "devel",
 }
 description = {
@@ -18,8 +18,9 @@ build = {
    modules = {},
    install = {
       bin = { cardbot = "src/init.lua" },
+      conf = { "config.lua" },
       lua = {
-         config = "config.lua",
+         --config = "config.lua",
          serialize = "lib/serialize.lua",
          database = "lib/database.lua"
       },
