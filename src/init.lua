@@ -1,15 +1,14 @@
 #!/usr/bin/env lua
 local s = require ("serialize")
 local fs = require ("lfs")
-local conf_path = 
-  os.getenv("APPDATA") and (os.getenv("APDATA").."/cardwallet_tbot/config.lua")
-  or (os.getenv("PREFIX") or "").."/etc/cardwallet_tbot.lua"
-if not fs.attributes(conf_path) then return end
-local config = loadfile(conf_path)()
+local usage_msg = "Usage "..arg[0].." -c config_file"
+assert(arg[1] == "-c", usage_msg)
+local config = dofile(assert(arg[2], usage_msg))
 if not fs.attributes(config.data_path) then
   fs.mkdir(config.data_path)
   fs.mkdir(config.users_db)
 end
+os.execute("mkdir -p "..config.users_db)
 local users = require ("database").new_db(config.users_db)
 print("[MAIN] Connecting...")
 local api = require ("telegram-bot-lua.core").configure(config.token)
